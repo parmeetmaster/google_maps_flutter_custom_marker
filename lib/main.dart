@@ -72,17 +72,17 @@ class MapSampleState extends State<MapSample> {
 
 
 
-  LatLng pinPosition = LatLng(37.3797536, -122.1017334);
+  LatLng pinPosition = LatLng(28.6442197, 77.2157713);
 
   // these are the minimum required values to set
   // the camera position
   var pinLocationIcon;
   Future<void> _goToTheLake() async {
      final CameraPosition _kLake = CameraPosition(
-        bearing: 192.8334901395799,
-        target: LatLng(37.3797536, -122.1017334),
-        tilt: 20.440717697143555,
-        zoom: 20.151926040649414);
+        bearing: 90.8334901395799,
+        target: pinPosition,
+        tilt: 0,
+        zoom: 25.151926040649414);
 
 
     final GoogleMapController controller = await _controller.future;
