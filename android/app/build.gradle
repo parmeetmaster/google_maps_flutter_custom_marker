@@ -56,4 +56,7 @@ flutter {
 
 dependencies {
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version"
+    api "com.google.android.gms:play-services-location:17.0.0"
+
+    implementation 'com.squareup.moshi:moshi:1.9.2'
 }

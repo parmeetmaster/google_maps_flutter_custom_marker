@@ -56,21 +56,26 @@ class MapSampleState extends State<MapSample> {
     return new Scaffold(
       body: Consumer<LocationProvider>(
         builder: (context, snapshot,child) {
-          return Stack(
-            children: [
-              GoogleMap(
-                mapType: MapType.normal,
-                initialCameraPosition: _kGooglePlex,
-                markers: _markers,
-                onMapCreated: (GoogleMapController controller) {
-                  _controller.complete(controller);
-                },
-              ),
-              Container(
-                width: 200,
-                child: Text("sdkad"),
-              )
-            ],
+          return FutureBuilder<CameraPosition>(
+            future: snapshot.getCurruntLocation(),
+            builder: (context, AsyncSnapshot<CameraPosition> snapshot) {
+              return Stack(
+                children: [
+                  GoogleMap(
+                    mapType: MapType.normal,
+                    initialCameraPosition: snapshot.data,
+                    markers: _markers,
+                    onMapCreated: (GoogleMapController controller) {
+                      _controller.complete(controller);
+                    },
+                  ),
+                  Container(
+                    width: 200,
+                    child: Text("sdkad"),
+                  )
+                ],
+              );
+            }
           );
         }
       ),

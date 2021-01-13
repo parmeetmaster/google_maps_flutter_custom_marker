@@ -30,6 +30,7 @@ dependencies:
   cupertino_icons: ^1.0.2
   google_maps_flutter: ^1.0.10
   provider: ^4.3.2+2
+  geolocator: ^6.1.13  # new geolocator added https://pub.dev/packages/geolocation
 dev_dependencies:
   flutter_test:
     sdk: flutter
