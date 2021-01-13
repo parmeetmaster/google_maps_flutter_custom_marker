@@ -4,12 +4,27 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:provider/provider.dart';
 
 /*
 * This app need to update min sdk version to 24 in order to run map api
 *
 * */
-void main() => runApp(MyApp());
+/*void main() => runApp(MyApp());*/
+
+
+void main (){
+
+
+runApp(
+  MultiProvider(providers: [
+
+  ])
+);
+
+
+}
+
 
 class MyApp extends StatelessWidget {
   @override
