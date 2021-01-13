@@ -4,7 +4,8 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:google_maps_testing/Provider/LocationProvider.dart';
+import 'Provider/LocationProvider.dart';
+import 'Widget/LoadingFragment.dart';
 import 'package:provider/provider.dart';
 
 /*
@@ -66,7 +67,7 @@ class MapSampleState extends State<MapSample> {
                    children: [
                      (){
                        if(provider.isGpsPermanentDenied || snapshot.data==null) {
-                         return _getGpsRelatedEnableChoiceFragment();
+                         return LoadingFragment();
                        }
                        else if(snapshot.data!=null) {
                          return GoogleMap(mapType: MapType.normal,
