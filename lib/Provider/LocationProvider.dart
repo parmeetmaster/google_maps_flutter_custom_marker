@@ -5,39 +5,57 @@ import 'package:geolocator/geolocator.dart';
 
 class LocationProvider extends ChangeNotifier {
   bool isgpsServiceEnable = true;
-  bool isPermissionEnable = true;
-  bool isGpsPermanentDenied = false;
+  bool isGpsPermissionFragmentEnable=false;
+bool isInitLocationLoaded=false;
+  LocationPermission permission;
+  Future<void> checkPermission() async {
 
-  Future<void> _checkPermission() async {
-    LocationPermission permission;
 
     isgpsServiceEnable = await Geolocator.isLocationServiceEnabled();
     if (!isgpsServiceEnable) {
       isgpsServiceEnable = false;
+
+
       return Future.error('Location services are disabled.');
     }
 
     permission = await Geolocator.checkPermission();
+  /*Logic to Gps Screen is Enable or not*/
     if (permission == LocationPermission.deniedForever) {
-      isPermissionEnable = false;
-      isGpsPermanentDenied = true;
+        if(isGpsPermissionFragmentEnable==false){
+          isGpsPermissionFragmentEnable=true;
+          notifyListeners();
+        }
+        /*Logic to Gps Screen is Enable or not Ends here*/
       return Future.error(
           'Location permissions are permantly denied, we cannot request permissions.');
     }
 
     if (permission == LocationPermission.denied) {
       permission = await Geolocator.requestPermission();
-      if (permission != LocationPermission.whileInUse &&
-          permission != LocationPermission.always) {
-        isPermissionEnable = false;
+      if (permission != LocationPermission.whileInUse && permission != LocationPermission.always) {
+
+        await checkPermission();
+
+        if (permission == LocationPermission.whileInUse || permission == LocationPermission.always) {
+          notifyListeners();
+        }// refresh screen when permission have it
+
+
         return Future.error(
             'Location permissions are denied (actual value: $permission).');
-      }
+      }// if permission is denied scope
+
+
     }
+
+
+
+
   }
 
   Future<Position> _determinePosition() async {
-    _checkPermission();
+   checkPermission();
 
     return await Geolocator.getCurrentPosition();
   }
@@ -54,4 +72,15 @@ class LocationProvider extends ChangeNotifier {
       return null;
     }
   }
+
+  Future<CameraPosition> initlocationLoad() async {
+    isInitLocationLoaded=true;
+    return getCurruntLocation();
+  }
+refreshScreen(){
+    notifyListeners();
+}
+
+
+
 }

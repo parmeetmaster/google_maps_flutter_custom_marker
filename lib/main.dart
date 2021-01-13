@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 
 import 'package:flutter/material.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'Provider/LocationProvider.dart';
+import 'Widget/GpsPermissionFragment.dart';
 import 'Widget/LoadingFragment.dart';
 import 'package:provider/provider.dart';
 
@@ -61,12 +63,17 @@ class MapSampleState extends State<MapSample> {
         builder: (context, value,child) {
 
            return FutureBuilder<CameraPosition>(
-               future: value.getCurruntLocation(),
+               future: value.initlocationLoad(),
                builder: (context, AsyncSnapshot<CameraPosition> snapshot) {
                  return Stack(
                    children: [
                      (){
-                       if(provider.isGpsPermanentDenied || snapshot.data==null) {
+                       if( provider.permission==LocationPermission.deniedForever || provider.isgpsServiceEnable==false){
+                       return GpsPermissionFragment();
+                       }
+                      else if(snapshot.data==null) {
+                        provider.checkPermission();
+                        provider.refreshScreen();
                          return LoadingFragment();
                        }
                        else if(snapshot.data!=null) {
@@ -78,6 +85,7 @@ class MapSampleState extends State<MapSample> {
                            },
                          );
                        }
+
                      }()
 
                    ],
@@ -98,15 +106,7 @@ class MapSampleState extends State<MapSample> {
 
 
   }
-  Widget _getGpsRelatedEnableChoiceFragment() {
-    Size size=    MediaQuery.of(context).size;
-    return Container(
-      height:size.height,
-      width:size.width,
-      color: Colors.green,
-    );
 
-  }
 
   Widget _loadScreenFragement() {
     Size size=    MediaQuery.of(context).size;
