@@ -53,31 +53,38 @@ class MapSampleState extends State<MapSample> {
 
   @override
   Widget build(BuildContext context) {
+    final provider= Provider.of<LocationProvider>(context, listen: false);
+
     return new Scaffold(
       body: Consumer<LocationProvider>(
-        builder: (context, snapshot,child) {
-          return FutureBuilder<CameraPosition>(
-            future: snapshot.getCurruntLocation(),
-            builder: (context, AsyncSnapshot<CameraPosition> snapshot) {
-              return Stack(
-                children: [
-                  GoogleMap(
-                    mapType: MapType.normal,
-                    initialCameraPosition: snapshot.data,
-                    markers: _markers,
-                    onMapCreated: (GoogleMapController controller) {
-                      _controller.complete(controller);
-                    },
-                  ),
-                  Container(
-                    width: 200,
-                    child: Text("sdkad"),
-                  )
-                ],
-              );
-            }
-          );
-        }
+        builder: (context, value,child) {
+
+           return FutureBuilder<CameraPosition>(
+               future: value.getCurruntLocation(),
+               builder: (context, AsyncSnapshot<CameraPosition> snapshot) {
+                 return Stack(
+                   children: [
+                     (){
+                       if(provider.isGpsPermanentDenied || snapshot.data==null) {
+                         return _getGpsRelatedEnableChoiceFragment();
+                       }
+                       else if(snapshot.data!=null) {
+                         return GoogleMap(mapType: MapType.normal,
+                           initialCameraPosition: snapshot.data,
+                           markers: _markers,
+                           onMapCreated: (GoogleMapController controller) {
+                             _controller.complete(controller);
+                           },
+                         );
+                       }
+                     }()
+
+                   ],
+                 );
+               }
+           );
+         }
+
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _goToTheLake,
@@ -85,8 +92,30 @@ class MapSampleState extends State<MapSample> {
         icon: Icon(Icons.directions_boat),
       ),
     );
+
+
+
+
+  }
+  Widget _getGpsRelatedEnableChoiceFragment() {
+    Size size=    MediaQuery.of(context).size;
+    return Container(
+      height:size.height,
+      width:size.width,
+      color: Colors.green,
+    );
+
   }
 
+  Widget _loadScreenFragement() {
+    Size size=    MediaQuery.of(context).size;
+    return Container(
+        height:size.height,
+        width:size.width,
+        color: Colors.amber,
+        child:Center(child:CircularProgressIndicator()));
+
+  }
   LatLng pinPosition = LatLng(28.6442197, 77.2157713);
 
   // these are the minimum required values to set
@@ -114,4 +143,7 @@ class MapSampleState extends State<MapSample> {
       setState(() {});
     });
   }
+
+
+
 }
