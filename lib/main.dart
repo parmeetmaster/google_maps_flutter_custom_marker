@@ -4,6 +4,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:google_maps_testing/Provider/LocationProvider.dart';
 import 'package:provider/provider.dart';
 
 /*
@@ -12,19 +13,13 @@ import 'package:provider/provider.dart';
 * */
 /*void main() => runApp(MyApp());*/
 
-
-void main (){
-
-
-runApp(
-  MultiProvider(providers: [
-
-  ])
-);
-
-
+void main() {
+  runApp(MultiProvider(providers: [
+    ChangeNotifierProvider(create: (ctx) => LocationProvider())
+  ],
+  child:MyApp())
+  );
 }
-
 
 class MyApp extends StatelessWidget {
   @override
@@ -55,25 +50,29 @@ class MapSampleState extends State<MapSample> {
       tilt: 59.440717697143555,
       zoom: 10.151926040649414);
   Set<Marker> _markers = {};
+
   @override
   Widget build(BuildContext context) {
-
     return new Scaffold(
-
-      body: Stack(
-        children: [
-          GoogleMap(
-            mapType: MapType.normal,
-            initialCameraPosition: _kGooglePlex,
-            markers: _markers,
-            onMapCreated: (GoogleMapController controller) {
-              _controller.complete(controller);
-            },
-          ),
-          Container(width: 200,
-          child: Text("sdkad"),
-          )
-        ],
+      body: Consumer<LocationProvider>(
+        builder: (context, snapshot,child) {
+          return Stack(
+            children: [
+              GoogleMap(
+                mapType: MapType.normal,
+                initialCameraPosition: _kGooglePlex,
+                markers: _markers,
+                onMapCreated: (GoogleMapController controller) {
+                  _controller.complete(controller);
+                },
+              ),
+              Container(
+                width: 200,
+                child: Text("sdkad"),
+              )
+            ],
+          );
+        }
       ),
       floatingActionButton: FloatingActionButton.extended(
         onPressed: _goToTheLake,
@@ -81,46 +80,33 @@ class MapSampleState extends State<MapSample> {
         icon: Icon(Icons.directions_boat),
       ),
     );
-
-
   }
-
-
 
   LatLng pinPosition = LatLng(28.6442197, 77.2157713);
 
   // these are the minimum required values to set
   // the camera position
   var pinLocationIcon;
+
   Future<void> _goToTheLake() async {
-     final CameraPosition _kLake = CameraPosition(
+    final CameraPosition _kLake = CameraPosition(
         bearing: 90.8334901395799,
         target: pinPosition,
         tilt: 0,
         zoom: 25.151926040649414);
 
-
     final GoogleMapController controller = await _controller.future;
     controller.animateCamera(CameraUpdate.newCameraPosition(_kLake));
-     BitmapDescriptor.fromAssetImage(
-         ImageConfiguration(size: Size(48, 48)),
-       'flags/bic.png').then((onValue) {
-     pinLocationIcon = onValue;
+    BitmapDescriptor.fromAssetImage(
+            ImageConfiguration(size: Size(48, 48)), 'flags/bic.png')
+        .then((onValue) {
+      pinLocationIcon = onValue;
 
-     _markers.add(
-         Marker(
-             markerId: MarkerId("1234"),
-             position: pinPosition,
-             icon: pinLocationIcon
-         )
-     );
-     setState(() {
-
-     });
-
-
-       });
-
-
+      _markers.add(Marker(
+          markerId: MarkerId("1234"),
+          position: pinPosition,
+          icon: pinLocationIcon));
+      setState(() {});
+    });
   }
 }
