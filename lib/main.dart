@@ -77,6 +77,12 @@ class MapSampleState extends State<MapSample> {
                          return LoadingFragment();
                        }
                        else if(snapshot.data!=null) {
+
+                         _markers.add(Marker(
+                             markerId: MarkerId("1234"),
+                             position: LatLng(provider.curruntPosition.latitude,provider.curruntPosition.longitude),
+                             icon: pinLocationIcon));
+
                          return GoogleMap(mapType: MapType.normal,
                            initialCameraPosition: snapshot.data,
                            markers: _markers,

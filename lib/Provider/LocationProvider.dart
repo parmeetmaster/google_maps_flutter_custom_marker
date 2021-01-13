@@ -8,6 +8,7 @@ class LocationProvider extends ChangeNotifier {
   bool isGpsPermissionFragmentEnable=false;
 bool isInitLocationLoaded=false;
   LocationPermission permission;
+  Position curruntPosition;
   Future<void> checkPermission() async {
 
 
@@ -49,9 +50,6 @@ bool isInitLocationLoaded=false;
 
     }
 
-
-
-
   }
 
   Future<Position> _determinePosition() async {
@@ -67,10 +65,12 @@ bool isInitLocationLoaded=false;
         target: LatLng(position.latitude, position.longitude),
         zoom: 14.4746,
       );
+      curruntPosition=await Geolocator.getCurrentPosition();
       return _curruntLocation;
     } else {
       return null;
     }
+
   }
 
   Future<CameraPosition> initlocationLoad() async {
