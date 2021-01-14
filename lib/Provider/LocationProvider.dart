@@ -6,7 +6,7 @@ import 'package:geolocator/geolocator.dart';
 class LocationProvider extends ChangeNotifier {
   bool isgpsServiceEnable = true;
   bool isGpsPermissionFragmentEnable=false;
-bool isInitLocationLoaded=false;
+  bool isInitLocationLoaded=false;
   LocationPermission permission;
   Position curruntPosition;
   TextEditingController localInputController = TextEditingController();

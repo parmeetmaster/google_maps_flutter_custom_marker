@@ -99,7 +99,7 @@ class MapSampleState extends State<MapSample> {
                      }(),
                      // generate Input Text Box code here
                        (){
-                     
+                     //Edit Text 
                          if(snapshot.data!=null){
                            return Positioned(
                              top: 50,
