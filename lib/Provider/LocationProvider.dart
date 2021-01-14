@@ -9,6 +9,8 @@ class LocationProvider extends ChangeNotifier {
 bool isInitLocationLoaded=false;
   LocationPermission permission;
   Position curruntPosition;
+  TextEditingController localInputController = TextEditingController();
+
   Future<void> checkPermission() async {
 
 
