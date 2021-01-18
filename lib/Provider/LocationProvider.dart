@@ -5,6 +5,7 @@ import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:flutter_places/flutter_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
 import 'package:google_maps_testing/Utils/DioManager.dart';
@@ -13,17 +14,18 @@ import 'package:location/location.dart';
 class LocationProvider extends ChangeNotifier{
   final Location location = Location();
   LocationData locationData;
-
+  Place place;
   String _error;
   PermissionStatus _permissionGranted;
   bool _serviceEnabled;
   var autocompleteTextController=TextEditingController();
   List<String> placeSuggestions=[];
-
+  Set<Marker> markers = {};
+  bool isFirstLoadDone=false;
+  GoogleMapController controller;
   Future<void> _checkPermissions() async {
     final PermissionStatus permissionGrantedResult =
         await location.hasPermission();
-
     _permissionGranted = permissionGrantedResult;
   }
 
@@ -73,17 +75,23 @@ class LocationProvider extends ChangeNotifier{
     }
   }
 
-  CameraPosition currentPosition = null;
+  CameraPosition curruntCameraPosition = null;
 
   setCameraData() {
-    return currentPosition = CameraPosition(
-      target: LatLng(locationData.latitude, locationData.longitude),
-      zoom: 14.4746,
-    );
+    if(this.isFirstLoadDone==false) {
+      return curruntCameraPosition = CameraPosition(
+        target: LatLng(locationData.latitude, locationData.longitude),
+        zoom: 14.4746,
+      );
+    }
+  else{
+      return curruntCameraPosition;
+    }
+
   }
 
   Future<CameraPosition> initlocationLoad() async {
-if(currentPosition!=null)return currentPosition;
+if(curruntCameraPosition!=null)return curruntCameraPosition;
 
     await _checkPermissions();
     await _requestPermission();
@@ -125,6 +133,36 @@ Future<void> setUpdatedLocation(String submittedText){
 
   }
 
+  onTapAddMarker(LatLng latLng){
+   markers.remove;
+  markers.add(Marker(
+        markerId: MarkerId("1234"),
+        position: LatLng(latLng.latitude,latLng.longitude),
+       ));
+  isFirstLoadDone=true;
+  notifyListeners();
+  }
+
+  Future<void> setMarkerUsingPlaceDetails(Place place) async {
+    isFirstLoadDone=true;
+    this.place=place;
+    markers.remove;
+    markers.add(new Marker(
+    markerId: MarkerId("1234"),
+    position: LatLng(place.placeDetails.geometry.location.lat,place.placeDetails.geometry.location.lng),
+      )
+      );
+
+  final curruntCameraPosition =await CameraPosition(
+      target: LatLng(place.placeDetails.geometry.location.lat, place.placeDetails.geometry.location.lng),
+      zoom: 14.4746,
+    );
+  CameraUpdate cameraUpdate= CameraUpdate.newCameraPosition(curruntCameraPosition);
+   controller.moveCamera(cameraUpdate);
+
+        notifyListeners();
+
+  }
 
 
 }
