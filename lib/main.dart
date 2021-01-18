@@ -1,10 +1,10 @@
+import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/material.dart';
 
 import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
-import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'Provider/LocationProvider.dart';
 import 'Widget/GpsPermissionFragment.dart';
@@ -58,7 +58,7 @@ class MapSampleState extends State<MapSample> {
       tilt: 59.440717697143555,
       zoom: 10.151926040649414);
   Set<Marker> _markers = {};
-
+  GlobalKey<AutoCompleteTextFieldState<String>> key  = new GlobalKey();
   @override
   Widget build(BuildContext context) {
     final provider= Provider.of<LocationProvider>(context, listen: false);
@@ -73,22 +73,17 @@ class MapSampleState extends State<MapSample> {
                  return Stack(
                    children: [
                      (){
-                       if(provider.permission==LocationPermission.deniedForever || provider.isgpsServiceEnable==false){ // permission denied forever its executed
-                       return GpsPermissionFragment();
-                       }
-                      else if(snapshot.data==null) {  // on start its returns null snapshot data. When future done its future builder block called again
-                        provider.checkPermission();
-                        provider.refreshScreen(); // this is called if permission is done it will recall  future builder
-                         return LoadingFragment();
+                       if(snapshot.data==null) {  // on start its returns null snapshot data. When future done its future builder block called again
+                        return LoadingFragment();
                        }
                        else if(snapshot.data!=null) {
-                         _markers.add(Marker(
+                            _markers.add(Marker(
                              markerId: MarkerId("1234"),
-                             position: LatLng(provider.curruntPosition.latitude,provider.curruntPosition.longitude),
+                             position: LatLng(provider.locationData.latitude,provider.locationData.longitude),
                              icon: pinLocationIcon));
 
                          return GoogleMap(mapType: MapType.normal,
-                           initialCameraPosition: snapshot.data,
+                           initialCameraPosition: provider.currentPosition,
                            markers: _markers,
                            onMapCreated: (GoogleMapController controller) {
                              _controller.complete(controller);
@@ -99,7 +94,7 @@ class MapSampleState extends State<MapSample> {
                      }(),
                      // generate Input Text Box code here
                        (){
-                     //Edit Text 
+                     //dchfdhydfhh
                          if(snapshot.data!=null){
                            return Positioned(
                              top: 50,
@@ -121,24 +116,33 @@ class MapSampleState extends State<MapSample> {
 
                                      ]
                                  ),
-                                 child:TextField(
-                                   cursorColor: Colors.black,
-                                   controller:provider.localInputController,
-                                   decoration: InputDecoration(
-                                       icon: Container(
-                                         margin: EdgeInsets.only(left: 20,top: 5,bottom: 10),
-                                         width: 10,
-                                         height: 10,
-                                         child: Icon(
-                                           Icons.location_on,
-                                           color: Colors.black,
-                                         ),
-                                       ),
-                                       hintText: "Enter Location",
-                                       border: InputBorder.none,
-                                       contentPadding: EdgeInsets.only(left: 15,top: 16,bottom:10)
-                                   ),
-                                 )
+
+                         child: SimpleAutoCompleteTextField(
+                           key: key,
+                           decoration: InputDecoration(
+
+                             icon: Container(
+                               margin: EdgeInsets.only(left: 20,bottom: 10),
+                               width: 10,
+                               height: 10,
+                               child: Icon(
+                                 Icons.local_taxi,
+                                 color: Colors.black,
+                               ),
+                             ),
+                             hintText: "destination?",
+                             border: InputBorder.none,
+                             contentPadding: EdgeInsets.only(left: 15.0),
+                           ),
+                           controller:provider.autocompleteTextController,
+                           suggestions: provider.placeSuggestions,
+                           textChanged: (text){
+                             provider.updateSuggestions(text,key);
+                           },
+
+                           clearOnSubmit: true,
+                           textSubmitted: provider.onTextInputSubmit,
+                         ),
                              ),
                            );
                          }else{
