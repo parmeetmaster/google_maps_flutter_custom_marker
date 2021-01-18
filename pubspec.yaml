@@ -36,6 +36,7 @@ dependencies:
   dio: ^3.0.10
   shared_preferences: ^0.5.12+4
   uuid: ^2.2.2
+  flutter_places: any
 dev_dependencies:
   flutter_test:
     sdk: flutter

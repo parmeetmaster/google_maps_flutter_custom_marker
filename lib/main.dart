@@ -5,6 +5,7 @@ import 'dart:async';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
+import 'package:flutter_places/flutter_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'Provider/LocationProvider.dart';
 import 'Widget/GpsPermissionFragment.dart';
@@ -59,9 +60,38 @@ class MapSampleState extends State<MapSample> {
       zoom: 10.151926040649414);
   Set<Marker> _markers = {};
   GlobalKey<AutoCompleteTextFieldState<String>> key  = new GlobalKey();
+
+
+ _getpalcesWidget()  {
+
+
+   return Container(
+     height :100,
+     width: 100,
+     child: RaisedButton(
+       onPressed: () async {
+         final place = await FlutterPlaces.show(
+           context: context,
+           apiKey: "AIzaSyBvD73khNYpYFjm8RA5b_iKfZO8RPYJpyA",
+           modeType: ModeType.OVERLAY,
+         );
+
+       },
+       child: Text('Overlay'),
+     ),
+   );
+
+
+ }
+
   @override
   Widget build(BuildContext context) {
     final provider= Provider.of<LocationProvider>(context, listen: false);
+
+
+
+
+
 
     return new Scaffold(
       body: Consumer<LocationProvider>(
@@ -72,6 +102,7 @@ class MapSampleState extends State<MapSample> {
                builder: (context, AsyncSnapshot<CameraPosition> snapshot) {
                  return Stack(
                    children: [
+
                      (){
                        if(snapshot.data==null) {  // on start its returns null snapshot data. When future done its future builder block called again
                         return LoadingFragment();
@@ -120,7 +151,6 @@ class MapSampleState extends State<MapSample> {
                          child: SimpleAutoCompleteTextField(
                            key: key,
                            decoration: InputDecoration(
-
                              icon: Container(
                                margin: EdgeInsets.only(left: 20,bottom: 10),
                                width: 10,
@@ -139,7 +169,6 @@ class MapSampleState extends State<MapSample> {
                            textChanged: (text){
                              provider.updateSuggestions(text,key);
                            },
-
                            clearOnSubmit: true,
                            textSubmitted: provider.onTextInputSubmit,
                          ),

@@ -107,7 +107,6 @@ if(currentPosition!=null)return currentPosition;
       key.currentState.suggestions=placeSuggestions;
      }
 
-
   }
 
 Future<void> setUpdatedLocation(String submittedText){

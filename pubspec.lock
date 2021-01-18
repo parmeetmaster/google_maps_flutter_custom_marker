@@ -158,6 +158,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "0.2.6"
+  flutter_places:
+    dependency: "direct main"
+    description:
+      name: flutter_places
+      url: "https://pub.dartlang.org"
+    source: hosted
+    version: "1.0.0+4"
   flutter_plugin_android_lifecycle:
     dependency: transitive
     description:
