@@ -9,4 +9,7 @@ class Constants{
   //https://maps.googleapis.com/maps/api/place/details/json?placeid=ChIJx4LCUpoEDTkRpDT3uvi1aPo&key=AIzaSyBvD73khNYpYFjm8RA5b_iKfZO8RPYJpyA
  static const $sharePrefKey="GOOGLE_SEASSION_KEY";
 
+ static const $apiGeoCodingUrl="https://maps.googleapis.com/maps/api/geocode/json";
+
+
 }

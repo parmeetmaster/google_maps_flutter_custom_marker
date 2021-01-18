@@ -27,6 +27,24 @@ class DioManager {
       print("error status code ${e.message}");
     }
   }
+
+  Future<Response> getGooglePlaceDetailsApiFunction(String latitude,String longitude) async {
+    try {
+      return response = await dio.get(
+          "https://maps.googleapis.com/maps/api/geocode/json?latlng=$latitude,$longitude&key=${Constants.$apiToken}");
+      print("places api response ${response.data.toString()}");
+    } on DioError catch (err) {
+      print("Dio Error is ${err.message}");
+      handleError(err);
+    } on SocketException catch (e) {
+      print("error status code ${e.message}"); //handle internet not connected
+    } on FormatException catch (e) {
+      print("error status code ${e.message}");
+    } catch (e) {
+      print("error status code ${e.message}");
+    }
+  }
+
 }
 
 void handleError(DioError err) {}

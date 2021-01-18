@@ -7,7 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_places/flutter_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'Provider/DetailPlaceProvider.dart';
 import 'Provider/LocationProvider.dart';
+import 'Screens/DisplayPlaceDetailsScreen.dart';
 import 'Utils/UUIDGenerator.dart';
 import 'Widget/GpsPermissionFragment.dart';
 import 'Widget/LoadingFragment.dart';
@@ -25,7 +27,8 @@ import 'dart:math';
 
 void main() {
   runApp(MultiProvider(providers: [
-    ChangeNotifierProvider(create: (ctx) => LocationProvider())
+    ChangeNotifierProvider(create: (ctx) => LocationProvider()),
+    ChangeNotifierProvider(create: (ctx) => DetailPlaceProvider())
   ],
   child:MyApp())
   );
@@ -82,6 +85,7 @@ class MapSampleState extends State<MapSample> {
          ),
          onPressed: () async {
           place  = await FlutterPlaces.show(
+
              context: context,
              apiKey: "AIzaSyBvD73khNYpYFjm8RA5b_iKfZO8RPYJpyA",
              modeType: ModeType.OVERLAY,
@@ -113,6 +117,7 @@ class MapSampleState extends State<MapSample> {
           margin: EdgeInsets.only(bottom:30,right: 20),
 
           child: ElevatedButton(
+
             child: Row(
               children: [
                 Icon(Icons.arrow_forward),
@@ -185,7 +190,10 @@ class MapSampleState extends State<MapSample> {
                        //dchfdhydfhh
                        if(snapshot.data!=null){
                          return _getContinoueButton((){
-                           print("Continue clicked");
+                           Navigator.push(
+                             context,
+                             MaterialPageRoute(builder: (context) => DisplayPlaceDetailsRoute(markers:provider.markers,place:provider.place)),
+                           );
 
                          });
                        }else{
@@ -233,3 +241,5 @@ class MapSampleState extends State<MapSample> {
 
 
 }
+
+

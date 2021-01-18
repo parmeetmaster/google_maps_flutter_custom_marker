@@ -159,7 +159,6 @@ Future<void> setUpdatedLocation(String submittedText){
     );
   CameraUpdate cameraUpdate= CameraUpdate.newCameraPosition(curruntCameraPosition);
    controller.moveCamera(cameraUpdate);
-
         notifyListeners();
 
   }
