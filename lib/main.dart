@@ -151,57 +151,78 @@ class MapSampleState extends State<MapSample> {
            return FutureBuilder<CameraPosition>(
                future: value.initlocationLoad(),
                builder: (context, AsyncSnapshot<CameraPosition> snapshot) {
-                 return Stack(
-                   children: [
-                     (){
-                       if(snapshot.data==null) {  // on start its returns null snapshot data. When future done its future builder block called again
-                        return LoadingFragment();
-                       }
-                       else if(snapshot.data!=null) {
-                         if(provider.isFirstLoadDone==false){
-                           provider.markers.add(Marker(
-                               markerId: MarkerId("1234"),
-                               position: LatLng(provider.locationData.latitude,provider.locationData.longitude),
-                               icon: pinLocationIcon));
-                         }else{
-                           // do nothing
-                         }
-                         return GoogleMap(mapType: MapType.normal,
-                           initialCameraPosition: provider.curruntCameraPosition,
-                           markers: provider.markers,
-                           onMapCreated: (GoogleMapController controller) {
-                             _controller.complete(controller);
-                             provider.controller=controller;
-                           },
-                             onTap: provider.onTapAddMarker,
-                         );
-                       }
+                 return LayoutBuilder(
+                   builder: (context,constraints) {
+                     return Stack(
+                       children: [
 
-                     }(),
-                     // generate Input Text Box code here
-                       (){
-                         if(snapshot.data!=null){
-                           return _getSearchButton();
-                         }else{
-                            return Container();
-                         }
-                          }(),
                          (){
-                       //dchfdhydfhh
-                       if(snapshot.data!=null){
-                         return _getContinoueButton((){
-                           Navigator.push(
-                             context,
-                             MaterialPageRoute(builder: (context) => DisplayPlaceDetailsRoute(markers:provider.markers,place:provider.place)),
-                           );
+                           if(snapshot.data==null) {  // on start its returns null snapshot data. When future done its future builder block called again
+                            return LoadingFragment();
+                           }
+                           else if(snapshot.data!=null) {
+                             if(provider.isFirstLoadDone==false){
+                               provider.markers.add(Marker(
+                                   markerId: MarkerId("1234"),
+                                   position: LatLng(provider.locationData.latitude,provider.locationData.longitude),
+                                   icon: pinLocationIcon));
+                             }else{
+                               // do nothing
+                             }
+                             return GoogleMap(mapType: MapType.normal,
+                               initialCameraPosition: provider.curruntCameraPosition,
+                               markers: provider.markers,
+                               onMapCreated: (GoogleMapController controller) {
+                                 _controller.complete(controller);
+                                 provider.controller=controller;
+                               },
+                                 onTap: provider.onTapAddMarker,
+                             );
+                           }
 
-                         });
-                       }else{
-                         return Container();
-                       }
-                     }()
+                         }(),
+                         // generate Input Text Box code here
+                           (){
+                             if(snapshot.data!=null){
+                               return _getSearchButton();
+                             }else{
+                                return Container();
+                             }
+                              }(),
+                             (){
+                           //dchfdhydfhh
+                           if(snapshot.data!=null){
+                             return _getContinoueButton(() async {
+                          LatLng l=  await provider.controller.getLatLng(ScreenCoordinate(x: (constraints.maxWidth/2).toInt(),y: (constraints.maxHeight/2).toInt()));
+                               Navigator.push(
+                                 context,
+                                 MaterialPageRoute(builder: (context) => DisplayPlaceDetailsRoute(latLng: l,)),
+                               );
 
-                   ],
+                             });
+                           }else{
+                             return Container();
+                           }
+                         }(),
+
+                         ((){
+                           if(snapshot.data!=null){
+                             return   Positioned(
+                               top: (constraints.maxHeight - 40)/ 2,
+                               right: (constraints.maxWidth - 20)/ 2,
+                               child: new Icon(Icons.person_pin_circle, size: 20),
+                             );
+
+                           }else{
+                             return Container();
+                           }
+
+                         }())
+
+
+                       ],
+                     );
+                   }
                  );
                }
            );
