@@ -24,19 +24,20 @@ class DisplayPlaceDetailsRoute extends StatefulWidget {
 class _DisplayPlaceDetailsRouteState extends State<DisplayPlaceDetailsRoute> {
 
 
-
+TextStyle commonTextStyle=new TextStyle(fontSize: 20,fontWeight: FontWeight.w600);
 
   @override
   Widget build(BuildContext context) {
 
     final provider= Provider.of<DetailPlaceProvider>(context, listen: false);
-  //  print("This is latitude ${widget.markers.last.position.latitude} This is longitude ${widget.markers.last.position.longitude}");
+    if(widget.markers!=null){
+      print("This marker is latitude ${widget.markers.last.position.latitude} This is longitude ${widget.markers.last.position.longitude}");
+      provider.getLocatonDetails("${widget.markers.last.position.latitude} ","${widget.markers.last.position.longitude}","marker location");
+    }
 
-    /*if(widget.markers!=null)
-    provider.getLocatonDetails("${widget.markers.last.position.latitude} ","${widget.markers.last.position.longitude}");
-*/
+    print("This is custom marker");
     if(widget.latLng!=null){
-      provider.getLocatonDetails("${widget.latLng.latitude} ","${widget.latLng.longitude}");
+      provider.getLocatonDetails("${widget.latLng.latitude} ","${widget.latLng.longitude}","center icon location");
     }
 
     return Scaffold(
@@ -44,37 +45,37 @@ class _DisplayPlaceDetailsRouteState extends State<DisplayPlaceDetailsRoute> {
 
         builder: (context,value,child) {
           return ((){
-            if(widget.place!=null){return Container(
+            return Container(
               child: Column(
                 children: [
                   SizedBox(height: 40,),
-                  Text("This is latitude ${widget.markers.last.position.latitude} This is longitude ${widget.markers.last.position.longitude}"),
-                  Text("${provider.markerAddress}"),
+                  Text("Latitude ${widget.latLng.latitude}",style:commonTextStyle ),
+                  Text("Longitude ${widget.latLng.longitude}",style: commonTextStyle,),
 
-                  SizedBox(height: 50 ),
                   ((){
-                    if(widget.place!=null){
-                      return  Text("${widget.place.placeDetails.formattedAddress}");
-                    }else{
-                      return Container();
-                    }
+
+                      return  Column(
+                        children: [
+                          Padding( padding: EdgeInsets.all(50), child: Column(
+                            children: [
+                              Text("GeoCoded Address",style: commonTextStyle,),
+                              SizedBox(height: 10,),
+                              Text("${provider.markerAddress}"),
+                              Text("Place Search Address",style: commonTextStyle,),
+                              widget.place!=null ?Text("${widget.place.placeDetails.formattedAddress}"):Text("place not searched")
+
+                            ],
+                          )),
+                        ],
+                      );
+
 
                   }())
 
                 ],
               ),
             );
-            }else{
-              return Column(
-                children: [
-                  SizedBox(height: 40,),
-                  Text("This is latitude ${widget.latLng.latitude} This is longitude ${widget.latLng.longitude}"),
 
-
-                ],
-              );
-
-            }
 
           }());
         }

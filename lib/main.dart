@@ -6,6 +6,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_places/flutter_places.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'Provider/DetailPlaceProvider.dart';
 import 'Provider/LocationProvider.dart';
@@ -62,7 +63,7 @@ class MapSampleState extends State<MapSample> {
       target: LatLng(37.43296265331129, -122.08832357078792),
       tilt: 59.440717697143555,
       zoom: 10.151926040649414);
-  Set<Marker> _markers = {};
+
   GlobalKey<AutoCompleteTextFieldState<String>> key  = new GlobalKey();
 
 
@@ -159,13 +160,13 @@ class MapSampleState extends State<MapSample> {
                          (){
                            if(snapshot.data==null) {  // on start its returns null snapshot data. When future done its future builder block called again
                             return LoadingFragment();
-                           }
-                           else if(snapshot.data!=null) {
-                             if(provider.isFirstLoadDone==false){
-                               provider.markers.add(Marker(
-                                   markerId: MarkerId("1234"),
-                                   position: LatLng(provider.locationData.latitude,provider.locationData.longitude),
-                                   icon: pinLocationIcon));
+                                   }
+                                   else if(snapshot.data!=null) {
+                               if(provider.isFirstLoadDone==false){
+                             /*  provider.markers.add(Marker(
+                               markerId: MarkerId("1234"),
+                               position: LatLng(provider.locationData.latitude,provider.locationData.longitude),
+                                   icon: pinLocationIcon));*/
                              }else{
                                // do nothing
                              }
@@ -176,7 +177,7 @@ class MapSampleState extends State<MapSample> {
                                  _controller.complete(controller);
                                  provider.controller=controller;
                                },
-                                 onTap: provider.onTapAddMarker,
+
                              );
                            }
 
@@ -193,12 +194,7 @@ class MapSampleState extends State<MapSample> {
                            //dchfdhydfhh
                            if(snapshot.data!=null){
                              return _getContinoueButton(() async {
-                          LatLng l=  await provider.controller.getLatLng(ScreenCoordinate(x: (constraints.maxWidth/2).toInt(),y: (constraints.maxHeight/2).toInt()));
-                               Navigator.push(
-                                 context,
-                                 MaterialPageRoute(builder: (context) => DisplayPlaceDetailsRoute(latLng: l,)),
-                               );
-
+                             provider.performActionWithFixedMarker(constraints: constraints,context: context);
                              });
                            }else{
                              return Container();
@@ -208,9 +204,16 @@ class MapSampleState extends State<MapSample> {
                          ((){
                            if(snapshot.data!=null){
                              return   Positioned(
-                               top: (constraints.maxHeight - 40)/ 2,
-                               right: (constraints.maxWidth - 20)/ 2,
-                               child: new Icon(Icons.person_pin_circle, size: 20),
+                               bottom: (constraints.maxHeight)/ 2  ,
+                               left: ((constraints.maxWidth)/ 2 ) -10 ,
+                               child: Container(
+                                 height: 40,
+                                 width: 40,
+                                 child: SvgPicture.asset(
+                                     'assets/images/marker.svg',
+                                     semanticsLabel: 'A red up arrow'
+                                 ),
+                               ),
                              );
 
                            }else{
@@ -218,8 +221,6 @@ class MapSampleState extends State<MapSample> {
                            }
 
                          }())
-
-
                        ],
                      );
                    }

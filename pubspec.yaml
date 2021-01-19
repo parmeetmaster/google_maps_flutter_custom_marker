@@ -36,6 +36,8 @@ dependencies:
   dio: ^3.0.10
   shared_preferences: ^0.5.12+4
   uuid: ^2.2.2
+  logger: ^0.9.4
+  flutter_svg: ^0.19.2+1
   flutter_places: any
 dev_dependencies:
   flutter_test:

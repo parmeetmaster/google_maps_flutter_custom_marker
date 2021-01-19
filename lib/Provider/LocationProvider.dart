@@ -3,11 +3,13 @@ import 'dart:convert';
 import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/rendering.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_google_places/flutter_google_places.dart';
 import 'package:flutter_places/flutter_places.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:flutter/material.dart';
+import '../Screens/DisplayPlaceDetailsScreen.dart';
 import 'package:google_maps_testing/Utils/DioManager.dart';
 import 'package:location/location.dart';
 
@@ -133,7 +135,7 @@ Future<void> setUpdatedLocation(String submittedText){
 
   }
 
-  onTapAddMarker(LatLng latLng){
+/*  onTapAddMarker(LatLng latLng){
    markers.remove;
   markers.add(Marker(
         markerId: MarkerId("1234"),
@@ -141,18 +143,20 @@ Future<void> setUpdatedLocation(String submittedText){
        ));
   isFirstLoadDone=true;
   notifyListeners();
-  }
+  }*/
 
   Future<void> setMarkerUsingPlaceDetails(Place place) async {
     isFirstLoadDone=true;
     this.place=place;
-    markers.remove;
+ /*   markers.remove;
     markers.add(new Marker(
     markerId: MarkerId("1234"),
     position: LatLng(place.placeDetails.geometry.location.lat,place.placeDetails.geometry.location.lng),
       )
-      );
+      );*/
 
+
+    // Move camera to location
   final curruntCameraPosition =await CameraPosition(
       target: LatLng(place.placeDetails.geometry.location.lat, place.placeDetails.geometry.location.lng),
       zoom: 14.4746,
@@ -162,6 +166,21 @@ Future<void> setUpdatedLocation(String submittedText){
         notifyListeners();
 
   }
+
+  refreshScreen(){
+    notifyListeners();
+  }
+
+  performActionWithFixedMarker({dynamic constraints,BuildContext context}) async {
+
+    LatLng l=  await controller.getLatLng(ScreenCoordinate(x: ((constraints.maxWidth)  /2).toInt(),y: (((constraints.maxHeight)/2 )).toInt()));
+
+    Navigator.push(context,
+      MaterialPageRoute(builder: (context) => DisplayPlaceDetailsRoute(latLng: l,place: place,)),
+    );
+  }
+
+
 
 
 }
